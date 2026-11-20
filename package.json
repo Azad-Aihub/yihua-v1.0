@@ -1,0 +1,21 @@
+{
+  "name": "yihua",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "一画 · AI Image Studio — 一句话，一张画。可一键部署到 Cloudflare / Vercel / 腾讯 EdgeOne 的 AI 生图站",
+  "scripts": {
+    "dev": "node local/server.js",
+    "dev:live": "YIHUA_USE_REAL_UPSTREAM=1 node local/server.js",
+    "test": "node scripts/test-unit.mjs",
+    "deploy:cf": "wrangler deploy",
+    "deploy:vercel": "vercel deploy --prod",
+    "deploy:edgeone": "edgeone pages deploy"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

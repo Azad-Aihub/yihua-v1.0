@@ -1,0 +1,25 @@
+// 一画 · Cloudflare Workers 部署配置
+// 部署前请完成两件事：
+//   1. 创建 KV 命名空间：npx wrangler kv namespace create YIHUA_KV
+//   2. 把输出的 id 填到下面 kv_namespaces 里
+// 未绑定 KV 也能运行（内存模式），但限额与后台配置在重启后会重置。
+{
+  "name": "yihua",
+  "main": "worker/index.js",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./public",
+    "html_handling": "auto-trailing-slash"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "YIHUA_KV",
+      "id": "REPLACE_WITH_YOUR_KV_ID"
+    }
+  ],
+  // 可选：环境变量（也可部署后在控制台 Settings → Variables 设置）
+  "vars": {
+    // "ACCESS_PASSWORD": "你的访客使用密码",
+    // "ADMIN_PASSWORD": "你的管理密码"
+  }
+}

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>管理控制台 · 一画</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div class="page admin-wrap">
+
+  <header class="admin-head" id="adminHead" hidden>
+    <div>
+      <div class="admin-title">一画 · 管理控制台</div>
+      <div class="admin-sub">通道管理 · 额度设置 · 站点公告</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a class="btn-ghost" href="/" style="text-decoration:none;">返回站点</a>
+      <button id="logoutBtn" class="btn-ghost" type="button">退出登录</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 登录 -->
+    <section id="loginView" class="admin-login">
+      <div class="admin-card">
+        <h1>管理控制台</h1>
+        <p class="sub">请输入管理密码登录（默认 yihua-admin-2026，部署后请立即修改）</p>
+        <input id="adminPw" class="inp" type="password" placeholder="管理密码" autocomplete="off">
+        <p id="loginError" class="modal-error" hidden></p>
+        <div style="margin-top:16px;">
+          <button id="loginBtn" class="btn-primary btn-sm" type="button" style="width:100%;">登 录</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 主面板 -->
+    <section id="mainView" hidden>
+      <div class="admin-card">
+        <div class="meta-badges" id="metaBadges"></div>
+        <p class="meta-note" id="metaNote"></p>
+      </div>
+
+      <div class="admin-card" id="channelsCard">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap;">
+          <div class="admin-title" style="font-size:17px;">生图通道</div>
+          <button id="addChannel" class="btn-ghost" type="button">＋ 添加通道</button>
+        </div>
+        <div id="channelList"></div>
+        <p class="hint">说明：访客默认使用排序第一的启用通道；单个通道额度为 0 表示不限（仍受全站每 IP 每日限额约束）。接口地址填 API 根地址（如 https://api.example.com），系统自动拼接 /v1/images/generations 与 /v1/images/edits。</p>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-title" style="font-size:17px;margin-bottom:16px;">站点设置</div>
+        <div class="settings-grid">
+          <div>
+            <label class="f-label" for="setLimit">每位访客每日可成功生成（1–100 张）</label>
+            <input id="setLimit" class="inp" type="number" min="1" max="100" value="10">
+          </div>
+          <div>
+            <label class="f-label" for="setAccessPw">访客使用密码 <span class="optional" id="accessPwNote">留空表示不修改</span></label>
+            <input id="setAccessPw" class="inp" type="text" placeholder="不修改请留空" autocomplete="off">
+          </div>
+          <div>
+            <label class="f-label" for="setAdminPw">管理密码 <span class="optional" id="adminPwNote">留空表示不修改</span></label>
+            <input id="setAdminPw" class="inp" type="text" placeholder="不修改请留空" autocomplete="off">
+          </div>
+          <div class="full">
+            <label class="f-label" for="setAnnounce">站点公告 <span class="optional">显示在创作面板上方，留空则不显示</span></label>
+            <textarea id="setAnnounce" class="ta" maxlength="200" placeholder="例如：今日站点更新完成，生成速度已恢复。"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-actions">
+          <span class="hint" id="saveHint" style="margin:0;">修改后需点击保存才会生效</span>
+          <button id="saveBtn" class="btn-primary btn-sm" type="button">保存全部修改</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot" style="border-top:none;padding-top:0;">
+    <div class="foot-row foot-sub">
+      <span>一画 · AI Image Studio 管理后台</span>
+      <a class="foot-admin" href="/">前往站点</a>
+    </div>
+  </footer>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+<script src="/assets/admin.js" defer></script>
+</body>
+</html>

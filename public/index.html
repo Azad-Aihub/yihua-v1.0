@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一画 · AI Image Studio — 一句话，一张画</title>
+<meta name="description" content="一画：用日常的语言描述画面，AI 为你绘制；也可以上传一张照片，让它照着改。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <a class="brand" href="/">
+      <span class="seal" aria-hidden="true">一</span>
+      <span class="brand-name">一画</span>
+    </a>
+    <div class="top-right">
+      <span id="usageChip" class="usage-chip" hidden></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">YIHUA · AI IMAGE STUDIO</p>
+      <h1 class="hero-title">一句话，一张画。</h1>
+      <p class="lede">用日常的语言描述画面，AI 为你绘制；<br>也可以上传一张照片，让它照着改。</p>
+    </section>
+
+    <div id="announce" class="announce" hidden></div>
+
+    <section class="studio" aria-label="创作面板">
+      <div id="loadError" class="load-error" hidden></div>
+
+      <div class="field">
+        <div class="field-label"><span class="step">01</span>画面描述 <span class="req">*</span></div>
+        <textarea id="prompt" maxlength="2000" rows="4"
+          placeholder="例如：窗边一只打盹的橘猫，午后阳光斜照，胶片质感"></textarea>
+        <div class="prompt-meta">
+          <div class="sample-chips" id="sampleChips">
+            <button type="button" class="chip">水墨山水，大量留白</button>
+            <button type="button" class="chip">落日下的海边小镇，胶片质感</button>
+            <button type="button" class="chip">赛博朋克风格的城市夜景，霓虹灯</button>
+          </div>
+          <span id="promptCount" class="prompt-count">0 / 2000</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="step">02</span>参考图 <span class="optional">可选 · 上传照片让 AI 照着改</span></div>
+        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="上传参考图">
+          <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          <div id="dzEmpty" class="dz-empty">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-4.5-4.5L7 20"/></svg>
+            <span>点击选择或把图片拖到这里</span>
+            <span class="dz-hint">PNG / JPG / WebP，会自动压缩</span>
+          </div>
+          <div id="dzPreview" class="dz-preview" hidden>
+            <img id="dzImg" alt="参考图预览">
+            <div class="dz-info"><span id="dzName"></span><button id="dzRemove" class="link-btn" type="button">移除</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="step">03</span>画幅比例</div>
+        <div id="ratioGrid" class="ratio-grid" role="radiogroup" aria-label="画幅比例"></div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="step">04</span>通道与模型</div>
+        <div class="selects">
+          <div class="select-block">
+            <label class="sub-label" for="channelSelect">通道</label>
+            <div class="select-wrap">
+              <select id="channelSelect"></select>
+              <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <p id="channelHint" class="hint"></p>
+          </div>
+          <div class="select-block">
+            <label class="sub-label" for="modelSelect">生图模型</label>
+            <div class="select-wrap">
+              <select id="modelSelect"></select>
+              <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <p class="hint" id="modelHint"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="generateBtn" class="btn-primary" type="button">
+          <span class="btn-label">开始创作</span>
+        </button>
+        <p id="quotaNote" class="quota-note"></p>
+      </div>
+
+      <div id="status" class="status" hidden></div>
+    </section>
+
+    <section id="resultZone" class="result-zone" hidden>
+      <div class="result-head">
+        <h2>作品</h2>
+        <span id="resultMeta" class="result-meta"></span>
+      </div>
+
+      <figure class="result-figure">
+        <div id="busyBox" class="busy-box" hidden>
+          <div class="busy-frame">
+            <div class="busy-bar"><i></i></div>
+            <div class="busy-word" id="busyWord">正在运笔起稿…</div>
+            <div class="busy-timer" id="busyTimer">已用时 0 秒 · 生成约需 10–60 秒，请稍候</div>
+          </div>
+        </div>
+        <div id="imgWrap" class="img-frame" hidden>
+          <img id="resultImg" alt="生成的图片">
+        </div>
+        <figcaption id="resultExtra" class="result-extra" hidden></figcaption>
+        <figcaption id="resultActions" class="result-actions" hidden>
+          <button id="downloadBtn" class="btn-ghost" type="button">下载图片</button>
+          <button id="openBtn" class="btn-ghost" type="button">新窗口打开</button>
+          <button id="againBtn" class="btn-ghost" type="button">按同样设置再来一张</button>
+        </figcaption>
+      </figure>
+
+      <div class="history" id="historyBox">
+        <h3 class="history-title">本次会话作品 <span class="optional">仅保存在当前页面，刷新后清空，请及时下载</span></h3>
+        <div id="historyStrip" class="history-strip"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-row">
+      <span class="foot-brand"><span class="seal seal-s" aria-hidden="true">一</span>一画 · AI Image Studio</span>
+      <span id="footQuota" class="foot-note"></span>
+    </div>
+    <div class="foot-row foot-sub">
+      <span>图片由 AI 生成，仅供参考，请自行甄别</span>
+      <a class="foot-admin" href="/admin">管理</a>
+    </div>
+  </footer>
+</div>
+
+<div id="pwModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+  <div class="modal-card">
+    <h2 id="pwTitle" class="modal-title">输入使用密码</h2>
+    <p class="modal-sub">本站开启了访问验证，验证一次后 30 天内本设备免输入。</p>
+    <input id="pwInput" class="pw-input" type="password" placeholder="使用密码" autocomplete="off">
+    <p id="pwError" class="modal-error" hidden></p>
+    <div class="modal-actions">
+      <button id="pwCancel" class="btn-ghost" type="button">取消</button>
+      <button id="pwSubmit" class="btn-primary btn-sm" type="button">验证并继续</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="/assets/app.js" defer></script>
+</body>
+</html>
