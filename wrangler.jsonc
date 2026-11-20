@@ -14,7 +14,7 @@
   "kv_namespaces": [
     {
       "binding": "YIHUA_KV",
-      "id": "REPLACE_WITH_YOUR_KV_ID"
+      "id": "cd4d1945e79c43169466675fbe2263e1"
     }
   ],
   // 可选：环境变量（也可部署后在控制台 Settings → Variables 设置）
